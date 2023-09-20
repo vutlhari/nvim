@@ -29,7 +29,8 @@ return {
         'eslint',
         'golangci_lint_ls',
         'volar',
-        'tailwindcss'
+        'tailwindcss',
+        'elixirls'
       })
 
       lsp.on_attach(function(client, bufnr)
@@ -87,6 +88,8 @@ return {
       lspconfig.graphql.setup {}
 
       lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
+
+      lspconfig.elixir_ls.setup {}
 
       lsp.setup()
 
