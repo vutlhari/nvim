@@ -28,9 +28,6 @@ return {
           'vim',
           'vue'
         },
-        hightlight = {
-          enable = true
-        },
         highlight = {
           enable = true,
         },
@@ -52,12 +49,16 @@ return {
           extended_mode = false,
           max_file_lines = nil,
         },
-
         additional_vim_regex_highlighting = false,
-        context_commentstring = {
-          enable = true
-        }
       }
+
+      -- New setup for context_commentstring
+      require('ts_context_commentstring').setup {
+        -- Add any specific configuration you need here
+      }
+
+      -- Skip loading the deprecated context_commentstring module
+      vim.g.skip_ts_context_commentstring_module = true
     end
   }
 }
