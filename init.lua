@@ -12,7 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ' '
 
-vim.opt.guifont = { 'JetbrainsMono Nerd Font', ':h15' }
+vim.opt.guifont = { 'Dank Mono', ':h15' }
 
 local opt = vim.opt
 
