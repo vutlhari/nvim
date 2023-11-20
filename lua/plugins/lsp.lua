@@ -25,6 +25,7 @@ return {
       local lspconfig = require('lspconfig')
 
       lsp.ensure_installed({
+        'gopls',
         'lua_ls',
         'eslint',
         'golangci_lint_ls',
@@ -82,6 +83,19 @@ return {
             command = 'EslintFixAll',
           })
         end,
+      })
+
+
+      lspconfig.gopls.setup({
+        on_attach = lsp.on_attach,
+        settings = {
+          gopls = {
+            analyses = {
+              unusedparams = true,
+            },
+            staticcheck = true,
+          },
+        },
       })
 
       lspconfig.graphql.setup {}
