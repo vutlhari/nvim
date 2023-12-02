@@ -4,6 +4,7 @@ return {
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
       'JoosepAlviste/nvim-ts-context-commentstring',
+      'vrischmann/tree-sitter-templ'
     },
     build = ':TSUpdate',
     config = function()
@@ -26,7 +27,8 @@ return {
           'sql',
           'typescript',
           'vim',
-          'vue'
+          'vue',
+          'templ'
         },
         highlight = {
           enable = true,

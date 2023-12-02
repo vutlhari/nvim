@@ -30,7 +30,8 @@ return {
         'eslint',
         'golangci_lint_ls',
         'volar',
-        'tailwindcss'
+        'tailwindcss',
+        'templ'
       })
 
       lsp.on_attach(function(client, bufnr)
@@ -96,6 +97,10 @@ return {
             staticcheck = true,
           },
         },
+      })
+
+      lspconfig.templ.setup({
+        on_attach = lsp.on_attach,
       })
 
       lspconfig.graphql.setup {}
