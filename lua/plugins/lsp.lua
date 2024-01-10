@@ -1,7 +1,7 @@
 return {
   {
     'VonHeikemen/lsp-zero.nvim',
-    branch = 'v2.x',
+    branch = 'v3.x',
     dependencies = {
       { 'neovim/nvim-lspconfig' },
       { 'williamboman/mason.nvim' },
@@ -9,13 +9,31 @@ return {
       { 'hrsh7th/nvim-cmp' },
       { 'hrsh7th/cmp-nvim-lsp' },
       { 'L3MON4D3/LuaSnip' },
+      { 'nvimtools/none-ls.nvim' },
       {
         'j-hui/fidget.nvim',
         tag = 'legacy',
         opts = {}
       },
+
     },
     config = function()
+      local null_ls = require('null-ls')
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.stylua,
+          null_ls.builtins.formatting.prettierd,
+          null_ls.builtins.diagnostics.eslint_d.with({
+            condition = function(utils)
+              return utils.root_has_file({ '.eslintrc', '.eslintrc.cjs' })
+            end,
+          }),
+          null_ls.builtins.code_actions.eslint_d,
+          null_ls.builtins.code_actions.gitsigns,
+        },
+        root_dir = require('null-ls.utils').root_pattern('.null-ls-root', 'Makefile', 'package.json', '.git'),
+      })
+
       local lsp = require('lsp-zero').preset({
         name = 'recommended'
       })
@@ -46,46 +64,26 @@ return {
         info = '»'
       })
 
-      vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, {
-          --virtual_text = false,
-          virtual_text = {
-            prefix = '●',
-            spacing = 4,
-            severity_limit = 'Warning',
-          },
-          underline = true,
-          signs = true,
-          update_in_insert = true,
-        }
-      )
-
-      lspconfig.volar.setup({
+      require('lspconfig').volar.setup({
+        on_init = function(client)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentFormattingRangeProvider = false
+        end,
         filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
         settings = {
           css = {
             lint = {
-              unknownAtRules = 'ignore'
-            }
+              unknownAtRules = 'ignore',
+            },
           },
 
           scss = {
             lint = {
-              unknownAtRules = 'ignore'
-            }
-          }
-        }
+              unknownAtRules = 'ignore',
+            },
+          },
+        },
       })
-
-      lspconfig.eslint.setup({
-        on_attach = function(client, bufnr)
-          vim.api.nvim_create_autocmd('BufWritePre', {
-            buffer = bufnr,
-            command = 'EslintFixAll',
-          })
-        end,
-      })
-
 
       lspconfig.gopls.setup({
         on_attach = lsp.on_attach,
@@ -105,18 +103,37 @@ return {
 
       lspconfig.graphql.setup {}
 
-      lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
+      local lua_opts = lsp.nvim_lua_ls({
+        on_init = function(client)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentFormattingRangeProvider = false
+        end,
+      })
 
-      lsp.setup()
+      lspconfig.lua_ls.setup(lua_opts)
 
+      local cmp = require('cmp')
+      local cmp_action = require('lsp-zero').cmp_action()
+      local cmp_format = require('lsp-zero').cmp_format()
       cmp.setup({
-        mapping = {
-          ['<CR>'] = cmp.mapping.confirm({ select = false }),
-        },
         preselect = 'item',
         completion = {
-          completeopt = 'menu, menuone, noinsert'
-        }
+          completeopt = 'menu,menuone,noinsert',
+        },
+        sources = {
+          { name = 'nvim_lsp' },
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<CR>'] = cmp.mapping.confirm({ select = false }),
+          ['<Tab>'] = cmp_action.luasnip_supertab(),
+          ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
+        }),
+        formatting = cmp_format,
+        snippet = {
+          expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+          end,
+        },
       })
     end
   }
