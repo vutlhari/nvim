@@ -384,6 +384,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
+      "vrischmann/tree-sitter-templ",
     },
     build = ":TSUpdate",
     config = function()
