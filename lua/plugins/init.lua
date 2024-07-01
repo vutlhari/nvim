@@ -394,6 +394,8 @@ return {
           "css",
           "diff",
           "elixir",
+          "eex",
+          "heex",
           "go",
           "graphql",
           "html",
@@ -409,9 +411,6 @@ return {
           "vim",
           "vue",
           "templ",
-        },
-        hightlight = {
-          enable = true,
         },
         highlight = {
           enable = true,
