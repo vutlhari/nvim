@@ -60,5 +60,3 @@ vim.opt.pumheight = 10
 
 require("lazy").setup("plugins")
 require("keymaps")
-
-vim.cmd.colorscheme("catppuccin-mocha")
