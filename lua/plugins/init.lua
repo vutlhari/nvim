@@ -157,7 +157,12 @@ return {
       })
 
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "volar", "templ" },
+        ensure_installed = {
+          "lua_ls",
+          "volar",
+          "templ",
+          "tailwindcss",
+        },
         handlers = {
           lsp_zero.default_setup,
         },
@@ -169,8 +174,10 @@ return {
           client.server_capabilities.documentFormattingRangeProvider = false
         end,
       })
-      require("lspconfig").lua_ls.setup(lua_opts)
-      require("lspconfig").volar.setup({
+
+      local lsp = require("lspconfig")
+      lsp.lua_ls.setup(lua_opts)
+      lsp.volar.setup({
         on_init = function(client)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentFormattingRangeProvider = false
@@ -186,6 +193,27 @@ return {
           scss = {
             lint = {
               unknownAtRules = "ignore",
+            },
+          },
+        },
+      })
+
+      lsp.tailwindcss.setup({
+        capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+        filetypes = { "html", "elixir", "eelixir", "heex" },
+        init_options = {
+          userLanguages = {
+            elixir = "html-eex",
+            eelixir = "html-eex",
+            heex = "html-eex",
+          },
+        },
+        settings = {
+          tailwindCSS = {
+            experimental = {
+              classRegex = {
+                'class[:]\\s*"([^"]*)"',
+              },
             },
           },
         },
