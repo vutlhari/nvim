@@ -12,14 +12,13 @@ end
 vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 
-vim.opt.guifont = { "Dank Mono", ":h15" }
-
 local opt = vim.opt
 
 vim.cmd([[
     filetype plugin indent on
     syntax on
 ]])
+
 -- line number
 opt.number = true
 
