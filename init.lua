@@ -58,12 +58,7 @@ opt.showmode = false
 -- auto completion menu height
 vim.opt.pumheight = 10
 
-vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
-vim.keymap.set("n", "<leader><Tab>", ":bn<CR>", { desc = "Next buffer" })
-vim.keymap.set("n", "<leader><S-Tab>", ":bp<CR>", { desc = "Prev buffer" })
-vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Delete buffer" })
-vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename variable" })
-
 require("lazy").setup("plugins")
+require("keymaps")
 
 vim.cmd.colorscheme("catppuccin-mocha")
