@@ -157,7 +157,12 @@ return {
       })
 
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "volar", "templ" },
+        ensure_installed = {
+          "lua_ls",
+          "volar",
+          "templ",
+          "tailwindcss",
+        },
         handlers = {
           lsp_zero.default_setup,
         },
@@ -169,8 +174,10 @@ return {
           client.server_capabilities.documentFormattingRangeProvider = false
         end,
       })
-      require("lspconfig").lua_ls.setup(lua_opts)
-      require("lspconfig").volar.setup({
+
+      local lsp = require("lspconfig")
+      lsp.lua_ls.setup(lua_opts)
+      lsp.volar.setup({
         on_init = function(client)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentFormattingRangeProvider = false
@@ -186,6 +193,27 @@ return {
           scss = {
             lint = {
               unknownAtRules = "ignore",
+            },
+          },
+        },
+      })
+
+      lsp.tailwindcss.setup({
+        capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+        filetypes = { "html", "elixir", "eelixir", "heex" },
+        init_options = {
+          userLanguages = {
+            elixir = "html-eex",
+            eelixir = "html-eex",
+            heex = "html-eex",
+          },
+        },
+        settings = {
+          tailwindCSS = {
+            experimental = {
+              classRegex = {
+                'class[:]\\s*"([^"]*)"',
+              },
             },
           },
         },
@@ -394,6 +422,8 @@ return {
           "css",
           "diff",
           "elixir",
+          "eex",
+          "heex",
           "go",
           "graphql",
           "html",
@@ -409,9 +439,6 @@ return {
           "vim",
           "vue",
           "templ",
-        },
-        hightlight = {
-          enable = true,
         },
         highlight = {
           enable = true,
@@ -529,14 +556,50 @@ return {
     config = function()
       local harpoon = require("harpoon")
       harpoon:setup()
-
-      vim.keymap.set("n", "<leader>a", function()
-        harpoon:list():append()
-      end)
-      vim.keymap.set("n", "<leader>h", function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-      end)
     end,
+  },
+  {
+    "elixir-tools/elixir-tools.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      local elixir = require("elixir")
+      local elixirls = require("elixir.elixirls")
+      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+      elixir.setup({
+        nextls = { enable = true },
+        credo = {
+          enable = true,
+        },
+        elixirls = {
+          enable = true,
+          settings = elixirls.settings({
+            dialyzerEnabled = false,
+            enableTestLenses = false,
+          }),
+          on_attach = function(client, bufnr)
+            if client.supports_method("textDocument/formatting") then
+              vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+              vim.api.nvim_create_autocmd("BufWritePre", {
+                group = augroup,
+                buffer = bufnr,
+                callback = function()
+                  vim.lsp.buf.format({ async = false })
+                end,
+              })
+            end
+
+            vim.keymap.set("n", "<space>fp", ":ElixirFromPipe<cr>", { buffer = true, noremap = true })
+            vim.keymap.set("n", "<space>tp", ":ElixirToPipe<cr>", { buffer = true, noremap = true })
+            vim.keymap.set("v", "<space>em", ":ElixirExpandMacro<cr>", { buffer = true, noremap = true })
+          end,
+        },
+      })
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
   },
   {
     "catppuccin/nvim",
