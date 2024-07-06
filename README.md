@@ -3,7 +3,7 @@
 - [golangci](https://golangci-lint.run/usage/install) is required for Golang development
 
 ## Installation
-- run `git clone git@github.com:vutlhari/nvim-config.git ~/.config/nvim`
+- run `git clone git@github.com:vutlhari/nvim.git ~/.config/nvim`
 - run `nvim` and allow lazy.nvim to download files and set up the basics
 - *once the setup is complete, restart Neovim*
 - **you're ready to go!**
