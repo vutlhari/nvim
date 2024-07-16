@@ -26,7 +26,7 @@ wk.register({
     ["rn"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
     a = {
       function()
-        harpoon:list():add()
+        harpoon:list():append()
       end,
       "Add file to Harpoon",
     },
@@ -55,7 +55,7 @@ wk.register({
       name = "+Harpoon",
       a = {
         function()
-          harpoon:list():add()
+          harpoon:list():append()
         end,
         "Add file to Harpoon",
       },
