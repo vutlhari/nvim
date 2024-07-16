@@ -475,6 +475,7 @@ return {
       "nvim-neotest/neotest-plenary",
       "nvim-neotest/neotest-jest",
       "nvim-neotest/neotest-go",
+      "jfpedroza/neotest-elixir",
     },
     config = function()
       local neotest = require("neotest")
@@ -487,6 +488,9 @@ return {
             jest_test_discovery = false,
           }),
         },
+        require("neotest-elixir")({
+          extra_block_identifiers = { "test_with_mock" },
+        }),
         discovery = {
           enabled = false,
         },
