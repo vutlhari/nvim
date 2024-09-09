@@ -487,6 +487,7 @@ return {
             cwd = require("neotest-jest").root,
             jest_test_discovery = false,
           }),
+          require("neotest-elixir")({}),
         },
         require("neotest-elixir")({
           extra_block_identifiers = { "test_with_mock" },
