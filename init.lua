@@ -58,5 +58,21 @@ opt.showmode = false
 -- auto completion menu height
 vim.opt.pumheight = 10
 
+-- teminal config: disabled line numbers
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = vim.api.nvim_create_augroup("custom-term-open", { clear = true }),
+  callback = function()
+    vim.opt.number = false
+  end,
+})
+
+-- terminal config: create a quick bottom terminal split
+vim.keymap.set("n", "<leader>st", function()
+  vim.cmd.vnew()
+  vim.cmd.term()
+  vim.cmd.wincmd("J")
+  vim.api.nvim_win_set_height(0, 15)
+end)
+
 require("lazy").setup("plugins")
 require("keymaps")
